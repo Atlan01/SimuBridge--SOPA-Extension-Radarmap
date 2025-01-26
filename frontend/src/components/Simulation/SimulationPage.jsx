@@ -76,19 +76,20 @@ const SimulationPage = ({projectName, getData, toasting }) => {
         cancelToken: source.current.token
       });
       r.data.files.forEach(file => {
-        setFile(projectName, requestId + '/' + file.name, file.data);
-      })
+        // Modify the file name by prefixing the scenario name
+        const newFileName = `${scenarioData.scenarioName}_${file.name}`;
+        setFile(projectName, requestId + '/' + newFileName, file.data);
+      });
 
       // Setting the response state and updating the finished and started states
-      
       const responseObject = {
         message : r.data.message,
-        files : r.data.files.map(file => file.name),
+        files : r.data.files.map(file => `${scenarioData.scenarioName}_${file.name}`), // Update file names with the scenario name prefix
         finished : new Date(),
         requestId
-    }
-    setResponse(responseObject);
-    sessionStorage.setItem(projectName+'/lastSimulatorResponse', JSON.stringify(responseObject));
+      }
+      setResponse(responseObject);
+      sessionStorage.setItem(projectName+'/lastSimulatorResponse', JSON.stringify(responseObject));
       setFinished(true);
       setStarted(false);
       // Toasting a success message
